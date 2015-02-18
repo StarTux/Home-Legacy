@@ -1,0 +1,499 @@
+DefaultHomeNotFound:
+  color: red
+  text: 'Your default home has not been set.'
+NamedHomeNotFound:
+  color: red
+  text: 'The home "%homename%" does not exist.'
+CannotDeleteDefaultHome:
+  color: red
+  text: 'You cannot delete your default home.'
+
+PlayerAlreadyInvited:
+  color: red
+  text: '%playername% is already invited to this home.'
+PublicAlreadyInvited:
+  color: red
+  text: 'A public invite for this home already exists.'
+
+PlayerNotInvited:
+  color: red
+  text: '%player% is not invited to your home.'
+NobodyIsInvited:
+  color: red
+  text: 'There are no invites to this home.'
+PlayerUninvited:
+  color: dark_aqua
+  text: 'Invite for %playername% was retracted.'
+
+PlayerDidUninviteEveryone:
+  color: dark_aqua
+  text: 'All invites to this home were retracted.'
+YouAreNotInvited:
+  color: red
+  text: 'You are not invited.'
+
+InvalidHomeName:
+  color: red
+  text: 'Home name must only contain letters, digits and some punctuation.'
+HomeNameTooLong:
+  color: red
+  text: 'Home names cannot be longer than %maxlength% characters.'
+PlayerNotFound:
+  color: red
+  text: 'Unknown player: %playername%.'
+
+NotEnoughMoney:
+  color: red
+  text: 'You cannot afford the %price%.'
+TooManyHomes:
+  color: red
+  text: 'You already set all of your %maxhomes% homes.'
+
+TeleportedDefaultHome:
+  color: dark_aqua
+  text: 'Teleported to your default home.'
+TeleportedDefaultHomeWithPrice:
+  color: dark_aqua
+  text: 'Teleported to your default home. Cost: %price%.'
+TeleportedNamedHome:
+  color: dark_aqua
+  text: 'Teleported to your home "%homename%".'
+TeleportedNamedHomeWithPrice:
+  color: dark_aqua
+  text: 'Teleported to your home "%homename%". Cost: %price%.'
+
+VisitedDefaultHome:
+  color: dark_aqua
+  text: 'Teleported to the default home of %playername%.'
+VisitedDefaultHomeWithPrice:
+  color: dark_aqua
+  text: 'Teleported to the default home of %playername%. Cost: %price%.'
+VisitedNamedHome:
+  color: dark_aqua
+  text: 'Teleported to the home "%homename%" of %playername%.'
+VisitedNamedHomeWithPrice:
+  color: dark_aqua
+  text: 'Teleported to the home "%homename%" of %playername%. Cost: %price%.'
+
+DefaultHomeRewarded:
+  color: dark_aqua
+  text: '%playername% visited your home and pays you %reward%.'
+NamedHomeRewarded:
+  color: dark_aqua
+  text: '%playername% visited your home "%homename%" and pays you %reward%.'
+
+DefaultHomeSet:
+  color: dark_aqua
+  text: 'Default home set.'
+DefaultHomeSetWithPrice:
+  color: dark_aqua
+  text: 'Default home set. Cost: %price%.'
+NamedHomeSet:
+  color: dark_aqua
+  text: 'Home "%homename%" set.'
+NamedHomeSetWithPrice:
+  color: dark_aqua
+  text: 'Home "%homename%" set. Cost: %price%.'
+NamedHomeDeleted:
+  color: dark_aqua
+  text: 'Deleted home "%homename%"'
+
+PlayerInvited:
+  color: dark_aqua
+  text: '%playername% invited.'
+PublicInvited:
+  color: dark_aqua
+  text: 'Public invite created.'
+
+PlayerDidReceiveDefaultInvite:
+- color: dark_aqua
+  text: '%playername% invited you to their default home. You can '
+- color: aqua
+  text: 'click here'
+  hoverEvent:
+    action: show_text
+    value:
+      - color: dark_aqua
+        text: |
+          Click to visit the
+      - color: dark_aqua
+        text: |
+          default home
+      - color: dark_aqua
+        text: 'of %playername%.'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:'
+- color: dark_aqua
+  text: '.'
+PlayerDidReceiveNamedInvite:
+- color: dark_aqua
+  text: '%playername% invited you to their home "%homename%". You can '
+- color: aqua
+  text: 'click here'
+  hoverEvent:
+    action: show_text
+    value:
+      - color: dark_aqua
+        text: |
+          Click to visit the
+      - color: dark_aqua
+        text: |
+          home "%homename%"
+      - color: dark_aqua
+        text: 'of %playername%.'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:%homename%'
+- color: dark_aqua
+  text: '.'
+
+PlayerDidReceiveDefaultInviteWithPrice:
+- color: dark_aqua
+  text: '%playername% invited you to their default home. You can '
+- color: aqua
+  text: 'click here'
+  hoverEvent:
+    action: show_text
+    value:
+      - color: dark_aqua
+        text: |
+          Click to visit the
+      - color: dark_aqua
+        text: |
+          default home
+      - color: dark_aqua
+        text: |
+          of %playername%.
+      - color: dark_aqua
+        text: 'Cost: %price%.'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:'
+- color: dark_aqua
+  text: '.'
+PlayerDidReceiveNamedInviteWithPrice:
+- color: dark_aqua
+  text: '%playername% invited you to their home "%homename%". You can '
+- color: aqua
+  text: 'click here'
+  hoverEvent:
+    action: show_text
+    value:
+      - color: dark_aqua
+        text: |
+          Click to visit the
+      - color: dark_aqua
+        text: |
+          home "%homename%"
+      - color: dark_aqua
+        text: |
+          of %playername%.
+      - color: dark_aqua
+        text: 'Cost: %price%.'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:%homename%'
+- color: dark_aqua
+  text: '.'
+
+# ListHomes # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+ListHomes:
+- color: dark_aqua
+  text: 'Your homes (%homecount%/%maxhomes%): '
+- [ '%homelist%' ]
+ListHomesSeparator:
+  color: dark_aqua
+  text: ', '
+ListHomesNamedEntry:
+  color: aqua
+  text: '%homename%'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to teleport
+    - color: dark_aqua
+      text: 'to "%homename%".'
+  clickEvent:
+    action: run_command
+    value: '/home %homename%'
+ListHomesNamedEntryWithPrice:
+  color: aqua
+  text: '%homename%'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to teleport
+    - color: dark_aqua
+      text: |
+        to "%homename%".
+    - color: dark_aqua
+      text: 'Cost: %price%.'
+  clickEvent:
+    action: run_command
+    value: '/home %homename%'
+ListHomesDefaultEntry:
+  color: aqua
+  text: '[default]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to teleport
+    - color: dark_aqua
+      text: |-
+        to your default home.
+  clickEvent:
+    action: run_command
+    value: '/home'
+ListHomesDefaultEntryWithPrice:
+  color: aqua
+  text: '[default]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to teleport
+    - color: dark_aqua
+      text: |
+        to your default home.
+    - color: dark_aqua
+      text: 'Cost: %price%.'
+  clickEvent:
+    action: run_command
+    value: '/home'
+
+ListInvitersHeader:
+- color: dark_aqua
+  text: 'People who invited you (%playercount%) '
+- color: dark_red
+  text: '[Edit]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to enable
+    - color: dark_red
+      text: 'edit mode.'
+  clickEvent:
+    action: run_command
+    value: '/listinvites --edit'
+- color: dark_aqua
+  text: ':'
+ListInvitersSeparator:
+- color: dark_aqua
+  text: ', '
+ListInvitersEntry:
+- color: aqua
+  text: '%playername%'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to view all
+    - color: dark_aqua
+      text: |
+        your invites from
+    - color: dark_aqua
+      text: '%playername%'
+  clickEvent:
+    action: run_command
+    value: '/listinvites %playername%'
+ListInvitersDelete:
+- color: dark_red
+  text: '[x]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to delete
+    - color: dark_red
+      text: |
+        all home invites
+    - color: dark_red
+      text: 'from %playername%.'
+  clickEvent:
+    action: run_command
+    value: '/deleteinvite %playername%:*'
+
+ListInvites:
+- color: dark_aqua
+  text: 'Your invites from %playername% (%homecount%) '
+- color: dark_red
+  text: '[Edit]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to enable
+    - color: dark_red
+      text: 'edit mode.'
+  clickEvent:
+    action: run_command
+    value: '/listinvites --edit %playername%'
+- color: dark_aqua
+  text: ': '
+- [ '%homelist%' ]
+ListInvitesSeparator:
+- color: dark_aqua
+  text: ', '
+ListInvitesDefaultEntry:
+  color: aqua
+  text: '[default]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to visit the
+    - color: dark_aqua
+      text: |
+        default home of
+    - color: dark_aqua
+      text: '%playername%'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:'
+ListInvitesDefaultEntryWithPrice:
+  color: aqua
+  text: '[default]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to visit the
+    - color: dark_aqua
+      text: |
+        default home of
+    - color: dark_aqua
+      text: |
+        %playername%        
+    - color: dark_aqua
+      text: 'Cost: %price%.'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:'
+ListInvitesNamedEntry:
+  color: aqua
+  text: '%homename%'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to visit the
+    - color: dark_aqua
+      text: |
+        home "%homename%"
+    - color: dark_aqua
+      text: 'of %playername%.'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:%homename%'
+ListInvitesNamedEntryWithPrice:
+  color: aqua
+  text: '%homename%'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to visit the
+    - color: dark_aqua
+      text: |
+        home "%homename%"
+    - color: dark_aqua
+      text: |
+        of %playername%.
+    - color: dark_aqua
+      text: 'Cost: %price%.'
+  clickEvent:
+    action: run_command
+    value: '/home %playername%:%homename%'
+ListInvitesDeleteDefault:
+- color: dark_red
+  text: '[x]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to delete
+    - color: dark_red
+      text: |
+        the invite to
+    - color: dark_red
+      text: |
+        the default home
+    - color: dark_red
+      text: 'of %playername%.'
+  clickEvent:
+    action: run_command
+    value: '/deleteinvite %playername%:'
+ListInvitesDeleteNamed:
+- color: dark_red
+  text: '[x]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to delete
+    - color: dark_red
+      text: |
+        the invite to
+    - color: dark_red
+      text: |
+        the home "%homename%"
+    - color: dark_red
+      text: 'of %playername%.'
+  clickEvent:
+    action: run_command
+    value: '/deleteinvite %playername%:%homename%'
+
+PlayerDidDeleteDefaultInvite:
+- color: dark_red
+  text: 'Deleted invite to default home of %playername%.'
+PlayerDidDeleteNamedInvite:
+- color: dark_red
+  text: 'Deleted invite to home "%homename%" of %playername%.'
+PlayerDidDeleteAllInvitesOfPlayer:
+- color: dark_red
+  text: 'Deleted all invites to homes of %playername%.'
+
+BuyHomeMenu:
+- color: dark_aqua
+  text: 'You have %maxhomes% home slots. Buy a new one for '
+- color: aqua
+  text: '%price%'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Click to buy a
+    - color: dark_aqua
+      text: |
+        new home for
+    - color: dark_aqua
+      text: '%price%.'
+  clickEvent:
+    action: run_command
+    value: '/buyhome %rawprice%'
+- color: dark_aqua
+  text: '?'
+PlayerDidBuyHome:
+- color: dark_aqua
+  text: 'You were debited %price% and now have %maxhomes% home slots.'

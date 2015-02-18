@@ -1,0 +1,149 @@
+name: Home
+description: A home system for Winthier
+author: StarTux
+version: 0.1
+main: com.winthier.home.bukkit.BukkitHomePlugin
+database: true
+depend: [ Vault, PlayerCache ]
+commands:
+# User Commands
+  home:
+    description: Visit a home
+    permission: home.home
+    usage: |-
+      /Home - Visit your default home
+      /Home <Name> - Visit a named home
+      /Home <Player> - Visit a home you were invited to
+      /Home <Player>:<Name> - Visit a named home you were been invited to
+  sethome:
+    description: Set a home
+    permission: home.sethome
+    usage: |-
+      /SetHome - Set your default home
+      /SetHome <Name> - Set a named home
+  listhomes:
+    aliases: [ homes ]
+    description: List your homes
+    usage: |-
+      /ListHomes - List your homes
+    permission: home.listhomes
+  deletehome:
+    description: Delete a home
+    permission: home.deletehome
+    usage: |-
+      /DeleteHome <Name> - Delete a named home
+  invitehome:
+    description: Invite someone to your home
+    permission: home.invitehome
+    usage: |-
+      /InviteHome <Player> - Invite someone to your default home
+      /InviteHome <Player> <Name> - Invite someone to a named home
+      /InviteHome * - Invite everyone to your default home
+      /InviteHome * - <Name> Invite everyone to your a named home
+  uninvitehome:
+    description: Retract an invitation to your home
+    permission: home.uninvitehome
+    usage: |-
+      /InviteHome <Player> - Invite someone to your default home
+      /InviteHome <Player> <Name> - Invite someone to a named home
+      /InviteHome * - Invite everyone to your default home
+      /InviteHome * - <Name> Invite everyone to your a named home
+  listinvites:
+    aliases: [ invites ]
+    description: List all homes you are invited to
+    permission: home.listinvites
+    usage: |-
+      /ListInvites - List all invites
+      /ListInvites <player> List all invites of a player
+  deleteinvite:
+    description: Delete invites for you to other players'' homes
+    permission: home.deleteinvite
+    usage: |-
+      /DeleteInvite <Player>: - Delete an invite to a default home
+      /DeleteInvite <Player>:<Home> - Delete an invite to a named home
+      /DeleteInvite <Player>:* - Delete all invites from someone
+  buyhome:
+    description: Buy a new home slot
+    permission: home.buyhome
+    usage: |-
+      /BuyHome - Buy a new home slot
+  homeadmin:
+    description: Home admin interface
+    permission: home.admin
+permissions:
+  home.home:
+    description: Use /home
+    default: op
+  home.sethome:
+    description: use /sethome
+    default: op
+  home.listhomes:
+    description: use /listhomes and /homes
+    default: op
+  home.deletehome:
+    description: use /deletehome
+    default: op
+  home.invitehome:
+    description: use /invitehome
+    default: op
+  home.uninvitehome:
+    description: use /uninvitehome
+    default: op
+  home.listinvites:
+    description: use /listhomes
+    default: op
+  home.deleteinvite:
+    description: use /deleteinvite
+    default: op
+  home.buyhome:
+    description: use /buyhome
+    default: op
+  home.user:
+    description: All user permissions except for buyhome
+    default: op
+    children:
+      home.home: true
+      home.sethome: true
+      home.listhomes: true
+      home.deletehome: true
+      home.invitehome: true
+      home.uninvitehome: true
+      home.listinvites: true
+      home.deleteinvite: true
+  home.admin:
+    description: Administrative privileges
+    default: op
+    children:
+      home.user: true
+      home.home.other: true
+      home.sethome.other: true
+      home.listhomes.other: true
+      home.deletehome.other: true
+      home.invitehome.other: true
+  home.admin.list:
+    description: use /homeadmin list
+    default: op
+  home.admin.goto:
+    description: use /homeadmin goto
+    default: op
+  home.admin.grant:
+    description: use /homeadmin grant
+    default: op
+  home.admin.reload:
+    description: use /homeadmin reload
+    default: op
+  home.admin.consistency:
+    description: use /homeadmin consistency
+    default: op
+  home.admin.import:
+    description: use /homeadmin import
+    default: op
+  home.admin.*:
+    description: Add admin privileges
+    default: op
+    children:
+      home.admin.list: true
+      home.admin.goto: true
+      home.admin.reload: true
+      home.admin.consistency: true
+      home.admin.import: true

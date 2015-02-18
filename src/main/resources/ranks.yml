@@ -1,0 +1,15 @@
+default:
+  MaxHomes: 1
+  Economy:
+    BuyHomeCostBase: -1
+    BuyHomeCostGrowth: -1
+    Default:
+      SetHomeCost: 0
+      GoHomeCost: 0
+      VisitHomeCost: 10
+      VisitHomeReward: 0
+    Named:
+      SetHomeCost: 0
+      GoHomeCost: 10
+      VisitHomeCost: 10
+      VisitHomeReward: 0
