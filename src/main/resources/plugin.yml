@@ -135,9 +135,9 @@ permissions:
   home.admin.consistency:
     description: use /homeadmin consistency
     default: op
-  home.admin.import:
-    description: use /homeadmin import
-    default: op
+#  home.admin.import:
+#    description: use /homeadmin import
+#    default: op
   home.admin.*:
     description: Add admin privileges
     default: op

@@ -27,8 +27,8 @@ public class AdminCommands {
             homes.msg(sender, "/HomeAdmin Reload - Reload configuration");
         if (Permission.HOME_ADMIN_CONSISTENCY.has(sender))
             homes.msg(sender, "/HomeAdmin Consistency (Fix) - Detect and optionally fix consistency issues");
-        if (Permission.HOME_ADMIN_IMPORT.has(sender))
-            homes.msg(sender, "/HomeAdmin Import - Import legacy homes.txt and invites.txt");
+        // if (Permission.HOME_ADMIN_IMPORT.has(sender))
+        //     homes.msg(sender, "/HomeAdmin Import - Import legacy homes.txt and invites.txt");
     }
 
     public boolean command(UUID sender, String[] args) {
@@ -90,9 +90,9 @@ public class AdminCommands {
                 if (!Permission.HOME_ADMIN_RELOAD.has(sender)) return false;
                 homes.reload();
                 homes.msg(sender, "&bConfiguration reloaded");
-            } else if (args.length == 1 && args[0].equalsIgnoreCase("import")) {
-                if (!Permission.HOME_ADMIN_IMPORT.has(sender)) return false;
-                migrate(sender);
+            // } else if (args.length == 1 && args[0].equalsIgnoreCase("import")) {
+            //     if (!Permission.HOME_ADMIN_IMPORT.has(sender)) return false;
+            //     migrate(sender);
             } else if (args.length <= 2 && args[0].equalsIgnoreCase("consistency")) {
                 if (!Permission.HOME_ADMIN_CONSISTENCY.has(sender)) return false;
                 boolean fix = false;
@@ -107,11 +107,11 @@ public class AdminCommands {
         return true;
     }
 
-    private void migrate(UUID sender) {
-        homes.msg(sender, "Starting migration...");
-        com.winthier.home.util.Legacy.migrate();
-        homes.msg(sender, "Finished migration...");
-    }
+    // private void migrate(UUID sender) {
+    //     homes.msg(sender, "Starting migration...");
+    //     com.winthier.home.util.Legacy.migrate();
+    //     homes.msg(sender, "Finished migration...");
+    // }
 
     private void consistency(UUID sender, boolean fix) {
         // Remove duplicate playerList
