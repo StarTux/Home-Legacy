@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.command.CommandException;
 
 @RequiredArgsConstructor
 public class AdminCommands {
@@ -35,24 +34,24 @@ public class AdminCommands {
         try {
             boolean result = _command(sender, args);
             if (!result) usage(sender);
-        } catch (CommandException ce) {
-            homes.msg(sender, "&c%s", ce.getMessage());
+        } catch (HomeException he) {
+            homes.msg(sender, "&c%s", he.getMessage());
         }
         return true;
     }
 
-    private boolean _command(UUID sender, String[] args) throws CommandException {
+    private boolean _command(UUID sender, String[] args) throws HomeException {
             if (args.length == 0) {
                 return false;
             } else if (args.length == 2 && args[0].equalsIgnoreCase("list")) {
                 if (!Permission.HOME_ADMIN_LIST.has(sender)) return false;
                 String playerName = args[1];
                 UUID playerUuid = homes.getPlayerUuid(playerName);
-                if (playerUuid == null) throw new CommandException("Player not found: " + playerName);
+                if (playerUuid == null) throw new HomeException("Player not found: " + playerName);
                 String tmp = homes.getPlayerName(playerUuid);
                 if (tmp != null) playerName = tmp;
                 PlayerRow player = PlayerRow.find(playerUuid);
-                if (player == null) throw new CommandException("Player " + playerName + " has no homes on this server");
+                if (player == null) throw new HomeException("Player " + playerName + " has no homes on this server");
                 List<HomeRow> homeList = HomeRow.find(playerUuid);
                 homes.msg(sender, "&bHomes of %s (%d/%d):", playerName, homeList.size(), player.getTotalMaxHomes());
                 for (HomeRow home : homeList) {
@@ -68,18 +67,18 @@ public class AdminCommands {
                 String playerName = tokens[0];
                 String homeName = tokens.length >= 2 ? tokens[1] : null;
                 UUID playerUuid = homes.getPlayerUuid(playerName);
-                if (playerUuid == null) throw new CommandException("Player not found: " + playerName);
+                if (playerUuid == null) throw new HomeException("Player not found: " + playerName);
                 String tmp = homes.getPlayerName(playerUuid);
                 if (tmp != null) playerName = tmp;
                 HomeRow home = HomeRow.find(playerUuid, homeName);
-                if (home == null) throw new CommandException("Home not found: " + homeArg);
+                if (home == null) throw new HomeException("Home not found: " + homeArg);
                 homes.msg(sender, "&bTeleporting you to %s:%s", home.getOwner().getName(), home.getNiceName());
                 homes.homeForRow(home).teleport(sender);
             } else if (args.length == 2 && args[0].equalsIgnoreCase("grant")) {
                 if (!Permission.HOME_ADMIN_GRANT.has(sender)) return false;
                 String playerName = args[1];
                 UUID playerUuid = homes.getPlayerUuid(playerName);
-                if (playerUuid == null) throw new CommandException("Player not found: " + playerName);
+                if (playerUuid == null) throw new HomeException("Player not found: " + playerName);
                 String tmp = homes.getPlayerName(playerUuid);
                 if (tmp != null) playerName = tmp;
                 PlayerRow player = PlayerRow.findOrCreate(playerUuid);
