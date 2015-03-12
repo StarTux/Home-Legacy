@@ -55,7 +55,8 @@
       <artifactId>VaultAPI</artifactId>
       <version>1.5</version>
       <scope>provided</scope>
-  </dependency>  </dependencies>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <!-- Java 7 -->
