@@ -14,8 +14,6 @@ import javax.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 
 @Entity
 @Table(
