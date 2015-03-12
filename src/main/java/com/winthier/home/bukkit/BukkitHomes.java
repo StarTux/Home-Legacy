@@ -71,11 +71,11 @@ class BukkitHomes extends Homes {
     public UUID getPlayerUuid(String name) {
         UUID result;
         result = PlayerCache.uuidForName(name);
-        if (result == null) {
-            @SuppressWarnings("deprecation")
-                final val tmp = Bukkit.getServer().getOfflinePlayer(name).getUniqueId();
-            result = tmp;
-        }
+        // if (result == null) {
+        //     @SuppressWarnings("deprecation")
+        //         final val tmp = Bukkit.getServer().getOfflinePlayer(name).getUniqueId();
+        //     result = tmp;
+        // }
         return result;
     }
     
