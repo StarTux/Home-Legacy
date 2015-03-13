@@ -7,6 +7,11 @@ database: true
 depend: [ Vault, PlayerCache ]
 commands:
 # User Commands
+  homes:
+    description: View the main menu
+    permission: home.homes
+    usage: |-
+      /Homes - View the main menu
   home:
     description: Visit a home
     permission: home.home
@@ -22,7 +27,6 @@ commands:
       /SetHome - Set your default home
       /SetHome <Name> - Set a named home
   listhomes:
-    aliases: [ homes ]
     description: List your homes
     usage: |-
       /ListHomes - List your homes
@@ -49,12 +53,15 @@ commands:
       /InviteHome * - Invite everyone to your default home
       /InviteHome * - <Name> Invite everyone to your a named home
   listinvites:
-    aliases: [ invites ]
     description: List all homes you are invited to
     permission: home.listinvites
     usage: |-
       /ListInvites - List all invites
-      /ListInvites <player> List all invites of a player
+  listmyinvites:
+    description: List all invites to your homes
+    permission: home.listmyinvites
+    usage: |-
+      /ListMyInvites - List invites to your homes
   deleteinvite:
     description: Delete invites for you to other players'' homes
     permission: home.deleteinvite
@@ -102,6 +109,7 @@ permissions:
     description: All user permissions except for buyhome
     default: op
     children:
+      home.homes: true
       home.home: true
       home.sethome: true
       home.listhomes: true
@@ -109,6 +117,7 @@ permissions:
       home.invitehome: true
       home.uninvitehome: true
       home.listinvites: true
+      home.listmyinvites: true
       home.deleteinvite: true
   home.admin:
     description: Administrative privileges

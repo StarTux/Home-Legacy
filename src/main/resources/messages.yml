@@ -1,3 +1,161 @@
+HomesMenuTitle:
+- color: dark_aqua
+  text: 'Home Command List'
+HomesMenuHome:
+- text: ' '
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: 'Visit one of your homes'
+  clickEvent:
+    action: suggest_command
+    value: /home
+  extra:
+  - color: aqua
+    text: '/Home ['
+  - color: aqua
+    italic: true
+    text: 'Name'
+  - color: aqua
+    italic: false
+    text: ']'
+- color: gray
+  text: ' - '
+- color: dark_aqua
+  text: 'Visit one of your homes'
+HomesMenuSethome:
+- text: ' '
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: 'Set a home at your current location'
+  clickEvent:
+    action: suggest_command
+    value: /sethome
+  extra:
+  - color: aqua
+    text: '/SetHome ['
+  - color: aqua
+    italic: true
+    text: 'Name'
+  - color: aqua
+    italic: false
+    text: ']'
+- color: gray
+  text: ' - '
+- color: dark_aqua
+  text: 'Set a home at your current location'
+HomesMenuListhomes:
+- color: aqua
+  text: ' /ListHomes'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: 'List your set homes'
+  clickEvent:
+    action: run_command
+    value: /listhomes
+- color: gray
+  text: ' - '
+- color: dark_aqua
+  text: 'List your set homes'
+HomesMenuInvitehome:
+- text: ' '
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Invite someone to your home
+    - color: gray
+      italic: true
+      text: |
+        Use '*' instead of a player
+    - color: gray
+      italic: true
+      text: |-
+        name to make a public invite.
+  clickEvent:
+    action: suggest_command
+    value: /invitehome
+  extra:
+  - color: aqua
+    text: '/InviteHome <'
+  - color: aqua
+    italic: true
+    text: 'Player'
+  - color: aqua
+    italic: false
+    text: '> ['
+  - color: aqua
+    italic: true
+    text: 'Home'
+  - color: aqua
+    italic: false
+    text: ']'
+- color: gray
+  text: ' - '
+- color: dark_aqua
+  text: 'Invite someone to your home'
+HomesMenuListinvites:
+- color: aqua
+  text: ' /ListInvites'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: 'List your home invites'
+  clickEvent:
+    action: run_command
+    value: /listinvites
+- color: gray
+  text: ' - '
+- color: dark_aqua
+  text: 'List your home invites'
+HomesMenuListmyinvites:
+- color: aqua
+  text: ' /ListMyInvites'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: 'List invites to your homes'
+  clickEvent:
+    action: run_command
+    value: /listmyinvites
+- color: gray
+  text: ' - '
+- color: dark_aqua
+  text: 'List invites to your homes'
+HomesMenuBuyhome:
+- color: aqua
+  text: ' /BuyHome'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_aqua
+      text: |
+        Buy another home slot.
+    - color: gray
+      text: |
+        You will be prompted with
+    - color: gray
+      text: |-
+        the price.
+  clickEvent:
+    action: run_command
+    value: /buyhome
+- color: gray
+  text: ' - '
+- color: dark_aqua
+  text: 'Buy another home slot'
+
+PlayerHasNoHomes:
+  color: red
+  text: "You don't have any homes set."
 DefaultHomeNotFound:
   color: red
   text: 'Your default home has not been set.'
@@ -17,14 +175,20 @@ PublicAlreadyInvited:
 
 PlayerNotInvited:
   color: red
-  text: '%player% is not invited to your home.'
+  text: '%playername% is not invited to your home.'
+PublicNotInvited:
+  color: red
+  text: 'There is no public invite for this home.'
 NobodyIsInvited:
   color: red
   text: 'There are no invites to this home.'
-PlayerUninvited:
+PlayerDidUninvitePlayer:
   color: dark_aqua
   text: 'Invite for %playername% was retracted.'
 
+PlayerDidUninvitePublic:
+  color: dark_aqua
+  text: 'The public invite to this home was retracted.'
 PlayerDidUninviteEveryone:
   color: dark_aqua
   text: 'All invites to this home were retracted.'
@@ -462,6 +626,113 @@ ListInvitesDeleteNamed:
   clickEvent:
     action: run_command
     value: '/deleteinvite %playername%:%homename%'
+
+ListMyInvitesTitle:
+- color: dark_aqua
+  text: 'Invites to your homes '
+- color: dark_red
+  text: '[edit]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to enable
+    - color: dark_red
+      text: edit mode.
+  clickEvent:
+    action: run_command
+    value: /listmyinvites --edit
+ListMyInvitesDefaultHeader:
+- color: dark_aqua
+  text: ' [Default]: '
+- [ '%homelist%' ]
+ListMyInvitesNamedHeader:
+- color: dark_aqua
+  text: ' %homename%: '
+- [ '%homelist%' ]
+ListMyInvitesPlayerEntry:
+- color: aqua
+  text: '%playername%'
+ListMyInvitesPublicEntry:
+- color: aqua
+  text: '*'
+ListMyInvitesSeparator:
+- color: dark_aqua
+  text: ', '
+
+ListMyInvitesDeleteDefaultPublic:
+- color: dark_red
+  text: '[x]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to uninvite
+    - color: dark_red
+      text: |
+        the public from
+    - color: dark_red
+      text: |-
+        your default home.
+  clickEvent:
+    action: run_command
+    value: /uninvitehome *
+ListMyInvitesDeleteDefaultPlayer:
+- color: dark_red
+  text: '[x]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to uninvite
+    - color: dark_red
+      text: |
+        %playername% from
+    - color: dark_red
+      text: |-
+        your default home.
+  clickEvent:
+    action: run_command
+    value: /uninvitehome %playername%
+ListMyInvitesDeleteNamedPublic:
+- color: dark_red
+  text: '[x]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to uninvite
+    - color: dark_red
+      text: |
+        the public from
+    - color: dark_red
+      text: |-
+        your home "%homename%".
+  clickEvent:
+    action: run_command
+    value: /uninvitehome * %homename%
+ListMyInvitesDeleteNamedPlayer:
+- color: dark_red
+  text: '[x]'
+  hoverEvent:
+    action: show_text
+    value:
+    - color: dark_red
+      text: |
+        Click to uninvite
+    - color: dark_red
+      text: |
+        %playername% from
+    - color: dark_red
+      text: |-
+        your home "%homename%".
+  clickEvent:
+    action: run_command
+    value: /uninvitehome %playername% %homename%
 
 PlayerDidDeleteDefaultInvite:
 - color: dark_red

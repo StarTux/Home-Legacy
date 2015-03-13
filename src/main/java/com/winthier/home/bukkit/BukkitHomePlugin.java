@@ -44,7 +44,7 @@ public class BukkitHomePlugin extends JavaPlugin {
     public void onEnable() {
         // Write some files to disk
         saveResource("ranks.yml", false);
-        saveResource("messages.yml", false);
+        //saveResource("messages.yml", false);
         // Setup database
         try {
             for (Class<?> clazz : getDatabaseClasses()) {
@@ -57,6 +57,7 @@ public class BukkitHomePlugin extends JavaPlugin {
         homes = new BukkitHomes(this);
         homes.enable();
         // Setup commands to all homes.getCommand().*
+        getCommand("homes").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().homes(getUuid(sender), args); } });
         getCommand("home").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().home(getUuid(sender), args); } });
         getCommand("sethome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().setHome(getUuid(sender), args); } });
         getCommand("invitehome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().inviteHome(getUuid(sender), args); } });
@@ -64,6 +65,7 @@ public class BukkitHomePlugin extends JavaPlugin {
         getCommand("listhomes").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().listHomes(getUuid(sender), args); } });
         getCommand("deletehome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().deleteHome(getUuid(sender), args); } });
         getCommand("listinvites").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().listInvites(getUuid(sender), args); } });
+        getCommand("listmyinvites").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().listMyInvites(getUuid(sender), args); } });
         getCommand("deleteinvite").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().deleteInvite(getUuid(sender), args); } });
         getCommand("buyhome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().buyHome(getUuid(sender), args); } });
         // Admin command

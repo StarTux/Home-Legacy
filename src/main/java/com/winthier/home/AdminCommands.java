@@ -206,20 +206,20 @@ public class AdminCommands {
         }
         homes.msg(sender, "Checking obsolete invites");
         // Remove obsolete invites
-        {
-            List<InviteRow> inviteList = new ArrayList<>();
-            for (SqlRow row : homes.getDatabase().createSqlQuery("SELECT id FROM invites JOIN (SELECT home_id FROM invites WHERE invitee_id IS NULL) AS publics ON invites.home_id = publics.home_id WHERE invitee_id IS NOT NULL").findList()) {
-                InviteRow invite = InviteRow.forId(row.getInteger("id"));
-                inviteList.add(invite);
-                if (!fix) {
-                    homes.msg(sender, "[%d] Obsolete invite for %s to %s:%s", invite.getId(), invite.getInvitee().getName(), invite.getHome().getOwner().getName(), invite.getHome().getNiceName());
-                }
-            }
-            if (fix && !inviteList.isEmpty()) {
-                int result = homes.getDatabase().delete(inviteList);
-                homes.msg(sender, "Removed %d obsolete invites", result);
-            }
-        }
+        // {
+        //     List<InviteRow> inviteList = new ArrayList<>();
+        //     for (SqlRow row : homes.getDatabase().createSqlQuery("SELECT id FROM invites JOIN (SELECT home_id FROM invites WHERE invitee_id IS NULL) AS publics ON invites.home_id = publics.home_id WHERE invitee_id IS NOT NULL").findList()) {
+        //         InviteRow invite = InviteRow.forId(row.getInteger("id"));
+        //         inviteList.add(invite);
+        //         if (!fix) {
+        //             homes.msg(sender, "[%d] Obsolete invite for %s to %s:%s", invite.getId(), invite.getInvitee().getName(), invite.getHome().getOwner().getName(), invite.getHome().getNiceName());
+        //         }
+        //     }
+        //     if (fix && !inviteList.isEmpty()) {
+        //         int result = homes.getDatabase().delete(inviteList);
+        //         homes.msg(sender, "Removed %d obsolete invites", result);
+        //     }
+        // }
         homes.msg(sender, "Consistency check finished");
     }
 }

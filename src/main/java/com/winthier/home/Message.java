@@ -12,6 +12,16 @@ import org.yaml.snakeyaml.Yaml;
 
 public class Message {
     public static enum Key {
+        HOMES_MENU_TITLE,
+        HOMES_MENU_HOME,
+        HOMES_MENU_SETHOME,
+        HOMES_MENU_LISTHOMES,
+        HOMES_MENU_INVITEHOME,
+        HOMES_MENU_LISTINVITES,
+        HOMES_MENU_LISTMYINVITES,
+        HOMES_MENU_BUYHOME,
+        
+        PLAYER_HAS_NO_HOMES,
         DEFAULT_HOME_NOT_FOUND,
         NAMED_HOME_NOT_FOUND,
         CANNOT_DELETE_DEFAULT_HOME,
@@ -20,10 +30,12 @@ public class Message {
         PUBLIC_ALREADY_INVITED,
 
         PLAYER_NOT_INVITED,
+        PUBLIC_NOT_INVITED,
         NOBODY_IS_INVITED,
         YOU_ARE_NOT_INVITED,
 
-        PLAYER_UNINVITED,
+        PLAYER_DID_UNINVITE_PLAYER,
+        PLAYER_DID_UNINVITE_PUBLIC,
         PLAYER_DID_UNINVITE_EVERYONE,
 
         INVALID_HOME_NAME,
@@ -82,6 +94,18 @@ public class Message {
         LIST_INVITES_DELETE_DEFAULT,
         LIST_INVITES_DELETE_NAMED,
 
+        LIST_MY_INVITES_TITLE,
+        LIST_MY_INVITES_DEFAULT_HEADER,
+        LIST_MY_INVITES_NAMED_HEADER,
+        LIST_MY_INVITES_PLAYER_ENTRY,
+        LIST_MY_INVITES_PUBLIC_ENTRY,
+        LIST_MY_INVITES_SEPARATOR,
+
+        LIST_MY_INVITES_DELETE_DEFAULT_PUBLIC,
+        LIST_MY_INVITES_DELETE_DEFAULT_PLAYER,
+        LIST_MY_INVITES_DELETE_NAMED_PUBLIC,
+        LIST_MY_INVITES_DELETE_NAMED_PLAYER,
+
         PLAYER_DID_DELETE_DEFAULT_INVITE,
         PLAYER_DID_DELETE_NAMED_INVITE,
         PLAYER_DID_DELETE_ALL_INVITES_OF_PLAYER,
@@ -92,6 +116,9 @@ public class Message {
         public final String key;
         Key() {
             this.key = Strings.camelCase(name());
+        }
+        public Message make(UUID uuid) {
+            return Message.forKeyAndRecipient(this, uuid);
         }
     }
 

@@ -11,6 +11,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HomeCommands {
     private final Homes homes;
+
+    public boolean homes(UUID sender, String[] args) {
+        Message.Key.HOMES_MENU_TITLE.make(sender).send();
+        if (Permission.HOME_LISTHOMES.has(sender)) Message.Key.HOMES_MENU_LISTHOMES.make(sender).send();
+        if (Permission.HOME_SETHOME.has(sender)) Message.Key.HOMES_MENU_SETHOME.make(sender).send();
+        if (Permission.HOME_HOME.has(sender)) Message.Key.HOMES_MENU_HOME.make(sender).send();
+        if (Permission.HOME_LISTINVITES.has(sender)) Message.Key.HOMES_MENU_LISTINVITES.make(sender).send();
+        if (Permission.HOME_LISTMYINVITES.has(sender)) Message.Key.HOMES_MENU_LISTMYINVITES.make(sender).send();
+        if (Permission.HOME_INVITEHOME.has(sender)) Message.Key.HOMES_MENU_INVITEHOME.make(sender).send();
+        if (Permission.HOME_BUYHOME.has(sender)) Message.Key.HOMES_MENU_BUYHOME.make(sender).send();
+        return true;
+    }
+    
     public boolean home(UUID sender, String[] args) {
         if (noPlayer(sender)) return true;
         if (args.length == 0) {
@@ -152,6 +165,20 @@ public class HomeCommands {
         } else {
             homes.getActions().listInvites(sender, ownerUuid, edit);
         }
+        return true;
+    }
+
+    public boolean listMyInvites(UUID sender, String[] args) {
+        if (noPlayer(sender)) return true;
+        boolean edit = false;
+        if (args.length == 0) {
+            // nothing
+        } else if (args.length == 1 && (args[0].equals("-e") || args[0].equals("--edit"))) {
+            edit = true;
+        } else {
+            return false;
+        }
+        homes.getActions().listMyInvites(sender, edit);
         return true;
     }
 

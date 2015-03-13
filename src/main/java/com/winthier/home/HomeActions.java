@@ -3,6 +3,7 @@ package com.winthier.home;
 import com.winthier.home.sql.HomeRow;
 import com.winthier.home.sql.InviteRow;
 import com.winthier.home.sql.PlayerRow;
+import com.winthier.home.util.Players;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -210,7 +211,7 @@ public class HomeActions {
         }
         // Find existing invite
         PlayerRow inviteeRow = inviteeUuid == null ? null : PlayerRow.findOrCreate(inviteeUuid);
-        if ((inviteeUuid == null && homeRow.isInvited((UUID)null)) || homeRow.isInvited(inviteeRow)) {
+        if (InviteRow.find(homeRow, inviteeRow) != null) {
             if (inviteeUuid == null) {
                 Message.forKeyAndRecipient(Message.Key.PUBLIC_ALREADY_INVITED, playerUuid).send();
             } else {
@@ -261,20 +262,20 @@ public class HomeActions {
             }
             Homes.getInstance().getDatabase().delete(inviteRow);
         } else {
-            // Uninvite everyone
-            List<InviteRow> inviteRows = homeRow.getInvites();
-            if (inviteRows == null || inviteRows.isEmpty()) {
-                Message.forKeyAndRecipient(Message.Key.NOBODY_IS_INVITED, playerUuid).send();
+            // Uninvite public
+            InviteRow inviteRow = InviteRow.find(homeRow, (PlayerRow)null);
+            if (inviteRow == null) {
+                Message.forKeyAndRecipient(Message.Key.PUBLIC_NOT_INVITED, playerUuid).send();
                 return;
             }
-            Homes.getInstance().getDatabase().delete(inviteRows);
+            Homes.getInstance().getDatabase().delete(inviteRow);
         }
         // Delete invite
         if (inviteeUuid == null) {
-            Message.forKeyAndRecipient(Message.Key.PLAYER_DID_UNINVITE_EVERYONE, playerUuid).send();
+            Message.forKeyAndRecipient(Message.Key.PLAYER_DID_UNINVITE_PUBLIC, playerUuid).send();
         } else {
-                String inviteeName = homes.getPlayerName(inviteeUuid);
-            Message.forKeyAndRecipient(Message.Key.PLAYER_UNINVITED, playerUuid).replace("%playername%", inviteeName).send();
+            String inviteeName = homes.getPlayerName(inviteeUuid);
+            Message.forKeyAndRecipient(Message.Key.PLAYER_DID_UNINVITE_PLAYER, playerUuid).replace("%playername%", inviteeName).send();
         }
     }
 
@@ -341,6 +342,39 @@ public class HomeActions {
             }
         }
         Message.forKeyAndRecipient(Message.Key.LIST_INVITES, playerUuid).replaceList("%homelist%", list).replace("%playername%", ownerName).replace("%homecount%", count).send();
+    }
+
+    public void listMyInvites(UUID sender, boolean edit) {
+        List<HomeRow> homeRows = HomeRow.find(sender);
+        if (homeRows.isEmpty()) {
+            Message.forKeyAndRecipient(Message.Key.PLAYER_HAS_NO_HOMES, sender).send();
+            return;
+        }
+        Message.forKeyAndRecipient(Message.Key.LIST_MY_INVITES_TITLE, sender).send();
+        for (HomeRow homeRow : homeRows) {
+            Message.Key key = homeRow.isNamed() ? Message.Key.LIST_MY_INVITES_NAMED_HEADER : Message.Key.LIST_MY_INVITES_DEFAULT_HEADER;
+            Message header = key.make(sender).replace("%homename%", homeRow.getName());
+            List<Message> contents = new ArrayList<>();
+            InviteRow publicInviteRow = InviteRow.find(homeRow, (PlayerRow)null);
+            if (publicInviteRow != null) {
+                contents.add(Message.Key.LIST_MY_INVITES_PUBLIC_ENTRY.make(sender));
+                if (edit) {
+                    key = homeRow.isNamed() ? Message.Key.LIST_MY_INVITES_DELETE_NAMED_PUBLIC : Message.Key.LIST_MY_INVITES_DELETE_DEFAULT_PUBLIC;
+                    contents.add(key.make(sender).replace("%homename%", homeRow.getName()));
+                }
+            }
+        inviteLoop:
+            for (InviteRow inviteRow : InviteRow.find(homeRow)) {
+                if (inviteRow.isPublic()) continue inviteLoop;
+                if (!contents.isEmpty()) contents.add(Message.forKeyAndRecipient(Message.Key.LIST_MY_INVITES_SEPARATOR, sender));
+                contents.add(Message.Key.LIST_MY_INVITES_PLAYER_ENTRY.make(sender).replace("%playername%", Players.getName(inviteRow.getInvitee().getUuid())));
+                if (edit) {
+                    key = homeRow.isNamed() ? Message.Key.LIST_MY_INVITES_DELETE_NAMED_PLAYER : Message.Key.LIST_MY_INVITES_DELETE_DEFAULT_PLAYER;
+                    contents.add(key.make(sender).replace("%homename%", homeRow.getName()).replace("%playername%", Players.getName(inviteRow.getInvitee().getUuid())));
+                }
+            }
+            header.replaceList("%homelist%", contents).send();
+        }
     }
 
     public void deleteInvites(UUID playerUuid, UUID ownerUuid) {

@@ -88,6 +88,10 @@ public class InviteRow {
         return find(invitee);
     }
 
+    public static List<InviteRow> find(HomeRow home) {
+        return Homes.getInstance().getDatabase().find(InviteRow.class).where().eq("home", home).findList();
+    }
+
     public static List<InviteRow> find(List<HomeRow> homes, PlayerRow invitee) {
         ExpressionFactory expr = Homes.getInstance().getDatabase().getExpressionFactory();
         return Homes.getInstance().getDatabase().find(InviteRow.class).where().in("home", homes).or(expr.isNull("invitee"), expr.eq("invitee", invitee)).findList();
