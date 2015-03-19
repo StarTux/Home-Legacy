@@ -2,10 +2,7 @@ package com.winthier.home;
 
 import com.avaje.ebean.SqlRow;
 import com.winthier.home.Rank;
-import com.winthier.home.sql.HomeRow;
-import com.winthier.home.sql.IgnoreInviteRow;
-import com.winthier.home.sql.InviteRow;
-import com.winthier.home.sql.PlayerRow;
+import com.winthier.home.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,18 +13,16 @@ public class AdminCommands {
     private final Homes homes;
 
     private void usage(UUID sender) {
-        if (Permission.HOME_ADMIN_LIST.has(sender))
-            homes.msg(sender, "/HomeAdmin List <Player> - List player homes");
-        if (Permission.HOME_ADMIN_GOTO.has(sender))
-            homes.msg(sender, "/HomeAdmin GoTo <Player>:<Home> - List player homes");
         if (Permission.HOME_ADMIN_GRANT.has(sender))
-            homes.msg(sender, "/HomeAdmin Grant <Player> - Grant player an extra home");
+            homes.msg(sender, "&e/HomeAdmin Grant <Player> - Grant player an extra home");
         if (Permission.HOME_ADMIN_RELOAD.has(sender))
-            homes.msg(sender, "/HomeAdmin Reload - Reload configuration");
+            homes.msg(sender, "&e/HomeAdmin Reload - Reload configuration");
+        if (Permission.HOME_ADMIN_WORLDBLACKLIST.has(sender))
+            homes.msg(sender, "&e/HomeAdmin WorldBlacklist List|Add|Remove [Name] - Manage the world blacklist");
         if (Permission.HOME_ADMIN_CONSISTENCY.has(sender))
-            homes.msg(sender, "/HomeAdmin Consistency (Fix) - Detect and optionally fix consistency issues");
-        // if (Permission.HOME_ADMIN_IMPORT.has(sender))
-        //     homes.msg(sender, "/HomeAdmin Import - Import legacy homes.txt and invites.txt");
+            homes.msg(sender, "&e/HomeAdmin Consistency (Fix) - Detect and optionally fix consistency issues");
+        if (Permission.HOME_ADMIN_IMPORT.has(sender))
+            homes.msg(sender, "&e/HomeAdmin Import - Import legacy homes.txt and invites.txt");
     }
 
     public boolean command(UUID sender, String[] args) {
@@ -41,68 +36,61 @@ public class AdminCommands {
     }
 
     private boolean _command(UUID sender, String[] args) throws HomeException {
-            if (args.length == 0) {
-                return false;
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("list")) {
-                if (!Permission.HOME_ADMIN_LIST.has(sender)) return false;
-                String playerName = args[1];
-                UUID playerUuid = homes.getPlayerUuid(playerName);
-                if (playerUuid == null) throw new HomeException("Player not found: " + playerName);
-                String tmp = homes.getPlayerName(playerUuid);
-                if (tmp != null) playerName = tmp;
-                PlayerRow player = PlayerRow.find(playerUuid);
-                if (player == null) throw new HomeException("Player " + playerName + " has no homes on this server");
-                List<HomeRow> homeList = HomeRow.find(playerUuid);
-                homes.msg(sender, "&bHomes of %s (%d/%d):", playerName, homeList.size(), player.getTotalMaxHomes());
-                for (HomeRow home : homeList) {
-                    String homeName = home.isNamed() ? home.getName() : "[default]";
-                    homes.msg(sender, "&b- %s %s,%d,%d,%d", homeName, home.getWorld().getName(), (int)home.getX(), (int)home.getY(), (int)home.getZ());
+        if (args.length == 0) {
+            return false;
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("grant")) {
+            if (!Permission.HOME_ADMIN_GRANT.has(sender)) return false;
+            String playerName = args[1];
+            UUID playerUuid = homes.getPlayerUuid(playerName);
+            if (playerUuid == null) throw new HomeException("Player not found: " + playerName);
+            String tmp = homes.getPlayerName(playerUuid);
+            if (tmp != null) playerName = tmp;
+            PlayerRow player = PlayerRow.findOrCreate(playerUuid);
+            int extraHomes = player.getExtraHomes() + 1;
+            player.setExtraHomes(extraHomes);
+            homes.msg(sender, "&bBumped extra home count of %s to %d", playerName, extraHomes);
+        } else if (args.length >= 1 && args[0].equalsIgnoreCase("worldblacklist") && args.length <= 3) {
+            if (!Permission.HOME_ADMIN_WORLDBLACKLIST.has(sender)) return false;
+            if (args.length == 2 && args[1].equalsIgnoreCase("list")) {
+                StringBuilder sb = new StringBuilder("Blacklisted worlds:");
+                for (String name : WorldBlacklistRow.getAllNames()) sb.append(" ").append(name);
+                homes.msg(sender, "&e%s", sb.toString());
+            } else if (args.length == 3 && args[1].equalsIgnoreCase("add")) {
+                String worldName = args[2];
+                if (WorldBlacklistRow.blacklistWorld(worldName)) {
+                    homes.msg(sender, "&eAdded world '%s' to blacklist.", worldName);
+                } else {
+                    homes.msg(sender, "&4Failed to add world '%' to blacklist.");
                 }
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("goto")) {
-                if (!Permission.HOME_ADMIN_GOTO.has(sender)) return false;
-                String homeArg = args[1];
-                if (!homeArg.contains(":")) return false;
-                String[] tokens = homeArg.split(":");
-                if (tokens.length < 1 || tokens.length > 2) return false;
-                String playerName = tokens[0];
-                String homeName = tokens.length >= 2 ? tokens[1] : null;
-                UUID playerUuid = homes.getPlayerUuid(playerName);
-                if (playerUuid == null) throw new HomeException("Player not found: " + playerName);
-                String tmp = homes.getPlayerName(playerUuid);
-                if (tmp != null) playerName = tmp;
-                HomeRow home = HomeRow.find(playerUuid, homeName);
-                if (home == null) throw new HomeException("Home not found: " + homeArg);
-                homes.msg(sender, "&bTeleporting you to %s:%s", home.getOwner().getName(), home.getNiceName());
-                homes.homeForRow(home).teleport(sender);
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("grant")) {
-                if (!Permission.HOME_ADMIN_GRANT.has(sender)) return false;
-                String playerName = args[1];
-                UUID playerUuid = homes.getPlayerUuid(playerName);
-                if (playerUuid == null) throw new HomeException("Player not found: " + playerName);
-                String tmp = homes.getPlayerName(playerUuid);
-                if (tmp != null) playerName = tmp;
-                PlayerRow player = PlayerRow.findOrCreate(playerUuid);
-                int extraHomes = player.getExtraHomes() + 1;
-                player.setExtraHomes(extraHomes);
-                homes.msg(sender, "&bBumped extra home count of %s to %d", playerName, extraHomes);
-            } else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-                if (!Permission.HOME_ADMIN_RELOAD.has(sender)) return false;
-                homes.reload();
-                homes.msg(sender, "&bConfiguration reloaded");
-            // } else if (args.length == 1 && args[0].equalsIgnoreCase("import")) {
-            //     if (!Permission.HOME_ADMIN_IMPORT.has(sender)) return false;
-            //     migrate(sender);
-            } else if (args.length <= 2 && args[0].equalsIgnoreCase("consistency")) {
-                if (!Permission.HOME_ADMIN_CONSISTENCY.has(sender)) return false;
-                boolean fix = false;
-                if (args.length >= 2) {
-                    if ("fix".equalsIgnoreCase(args[1])) fix = true;
-                    else return false;
+            } else if (args.length == 3 && args[1].equalsIgnoreCase("remove")) {
+                String worldName = args[2];
+                if (WorldBlacklistRow.removeFromBlacklist(worldName)) {
+                    homes.msg(sender, "&eRemoved world '%' from blacklist.", worldName);
+                } else {
+                    homes.msg(sender, "&4Failed to remove world '%' from blacklist.");
                 }
-                consistency(sender, fix);
             } else {
                 return false;
             }
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (!Permission.HOME_ADMIN_RELOAD.has(sender)) return false;
+            homes.reload();
+            homes.msg(sender, "&bConfiguration reloaded");
+            // } else if (args.length == 1 && args[0].equalsIgnoreCase("import")) {
+            //     if (!Permission.HOME_ADMIN_IMPORT.has(sender)) return false;
+            //     migrate(sender);
+        } else if (args.length <= 2 && args[0].equalsIgnoreCase("consistency")) {
+            if (!Permission.HOME_ADMIN_CONSISTENCY.has(sender)) return false;
+            boolean fix = false;
+            if (args.length >= 2) {
+                if ("fix".equalsIgnoreCase(args[1])) fix = true;
+                else return false;
+            }
+            consistency(sender, fix);
+            Homes.getInstance().reload();
+        } else {
+            return false;
+        }
         return true;
     }
 

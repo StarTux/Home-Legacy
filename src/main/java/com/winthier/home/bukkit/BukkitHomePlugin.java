@@ -1,5 +1,6 @@
 package com.winthier.home.bukkit;
 
+import com.winthier.home.HomeCommands;
 import com.winthier.home.Homes;
 import com.winthier.home.sql.*;
 import java.util.ArrayList;
@@ -42,9 +43,10 @@ public class BukkitHomePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        reloadConfig();
         // Write some files to disk
+        saveDefaultConfig();
         saveResource("ranks.yml", false);
-        //saveResource("messages.yml", false);
         // Setup database
         try {
             for (Class<?> clazz : getDatabaseClasses()) {
@@ -56,20 +58,6 @@ public class BukkitHomePlugin extends JavaPlugin {
         }
         homes = new BukkitHomes(this);
         homes.enable();
-        // Setup commands to all homes.getCommand().*
-        getCommand("homes").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().homes(getUuid(sender), args); } });
-        getCommand("home").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().home(getUuid(sender), args); } });
-        getCommand("sethome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().setHome(getUuid(sender), args); } });
-        getCommand("invitehome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().inviteHome(getUuid(sender), args); } });
-        getCommand("uninvitehome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().uninviteHome(getUuid(sender), args); } });
-        getCommand("listhomes").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().listHomes(getUuid(sender), args); } });
-        getCommand("deletehome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().deleteHome(getUuid(sender), args); } });
-        getCommand("listinvites").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().listInvites(getUuid(sender), args); } });
-        getCommand("listmyinvites").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().listMyInvites(getUuid(sender), args); } });
-        getCommand("deleteinvite").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().deleteInvite(getUuid(sender), args); } });
-        getCommand("buyhome").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getCommands().buyHome(getUuid(sender), args); } });
-        // Admin command
-        getCommand("homeadmin").setExecutor(new CommandExecutor() { @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { return homes.getAdminCommands().command(getUuid(sender), args); } });
     }
 
     @Override
@@ -80,17 +68,22 @@ public class BukkitHomePlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String args[]) {
-        return false;
+        HomeCommands.Type type = HomeCommands.Type.forString(command.getName());
+        UUID uuid = null;
+        if (sender instanceof Player) uuid = ((Player)sender).getUniqueId();
+        return homes.getCommands().onCommand(type, uuid, args);
     }
 
     @Override
     public List<Class<?>> getDatabaseClasses() {
         List<Class<?>> result = new ArrayList<>();
-        result.add(PlayerRow.class);
-        result.add(WorldRow.class);
         result.add(HomeRow.class);
-        result.add(InviteRow.class);
         result.add(IgnoreInviteRow.class);
+        result.add(InviteRow.class);
+        result.add(PlayerRow.class);
+        result.add(ServerRow.class);
+        result.add(WorldBlacklistRow.class);
+        result.add(WorldRow.class);
         return result;
     }
 
@@ -106,5 +99,9 @@ public class BukkitHomePlugin extends JavaPlugin {
             throw new RuntimeException("Failed to setup permission.");
         }
         return permission;
+    }
+
+    public String getServerName() {
+        return getConfig().getString("ServerName", "default");
     }
 }

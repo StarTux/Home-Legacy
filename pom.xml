@@ -56,6 +56,13 @@
       <version>1.5</version>
       <scope>provided</scope>
     </dependency>
+    <!-- Vault -->
+    <dependency>
+      <groupId>com.winthier.claims</groupId>
+      <artifactId>claims</artifactId>
+      <version>0.1</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

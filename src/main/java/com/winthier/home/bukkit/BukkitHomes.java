@@ -144,4 +144,20 @@ class BukkitHomes extends Homes {
         }
         return true;
     }
+
+    @Override
+    public String getServerName() {
+        return plugin.getServerName();
+    }
+
+    @Override
+    public boolean doCheckClaims() {
+        if (!plugin.getConfig().getBoolean("CheckClaims", false)) return false;
+        return (Bukkit.getServer().getPluginManager().getPlugin("Claims") != null);
+    }
+    
+    @Override
+    public void onReload() {
+        plugin.reloadConfig();
+    }
 }

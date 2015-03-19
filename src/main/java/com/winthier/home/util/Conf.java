@@ -142,14 +142,7 @@ public class Conf {
      * value if it fails.
      */
     public static double getDouble(Map<?, ?> map, String path, double def) {
-        Object o = findPath(map, path);
-        if (o == null) return def;
-        if (o instanceof Double) return (Double)o;
-        if (o instanceof Number) return ((Number)o).doubleValue();
-        try {
-            return Double.parseDouble(o.toString());
-        } catch (NumberFormatException nfe) {}
-        return def;
+        return toDouble(findPath(map, path), def);
     }
 
     public static Map<?, ?> getMap(Map<?, ?> map, String path) {
@@ -161,5 +154,26 @@ public class Conf {
             return result;
         }
         return null;
+    }
+
+    public static List<?> getList(Map<?, ?> map, String path) {
+        Object o = findPath(map, path);
+        if (o == null) return null;
+        if (o instanceof List) {
+            @SuppressWarnings("unchecked")
+                final val result = (List<?>)o;
+            return result;
+        }
+        return null;
+    }
+
+    public static double toDouble(Object o, double def) {
+        if (o == null) return def;
+        if (o instanceof Double) return (Double)o;
+        if (o instanceof Number) return ((Number)o).doubleValue();
+        try {
+            return Double.parseDouble(o.toString());
+        } catch (NumberFormatException nfe) {}
+        return def;
     }
 }    

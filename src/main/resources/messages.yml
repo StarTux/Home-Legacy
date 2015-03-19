@@ -166,13 +166,6 @@ CannotDeleteDefaultHome:
   color: red
   text: 'You cannot delete your default home.'
 
-PlayerAlreadyInvited:
-  color: red
-  text: '%playername% is already invited to this home.'
-PublicAlreadyInvited:
-  color: red
-  text: 'A public invite for this home already exists.'
-
 PlayerNotInvited:
   color: red
   text: '%playername% is not invited to your home.'
@@ -213,29 +206,29 @@ TooManyHomes:
   color: red
   text: 'You already set all of your %maxhomes% homes.'
 
-TeleportedDefaultHome:
+PlayerDidTeleportDefaultHome:
   color: dark_aqua
   text: 'Teleported to your default home.'
-TeleportedDefaultHomeWithPrice:
+PlayerDidTeleportDefaultHomeWithPrice:
   color: dark_aqua
   text: 'Teleported to your default home. Cost: %price%.'
-TeleportedNamedHome:
+PlayerDidTeleportNamedHome:
   color: dark_aqua
   text: 'Teleported to your home "%homename%".'
-TeleportedNamedHomeWithPrice:
+PlayerDidTeleportNamedHomeWithPrice:
   color: dark_aqua
   text: 'Teleported to your home "%homename%". Cost: %price%.'
 
-VisitedDefaultHome:
+PlayerDidVisitDefaultHome:
   color: dark_aqua
   text: 'Teleported to the default home of %playername%.'
-VisitedDefaultHomeWithPrice:
+PlayerDidVisitDefaultHomeWithPrice:
   color: dark_aqua
   text: 'Teleported to the default home of %playername%. Cost: %price%.'
-VisitedNamedHome:
+PlayerDidVisitNamedHome:
   color: dark_aqua
   text: 'Teleported to the home "%homename%" of %playername%.'
-VisitedNamedHomeWithPrice:
+PlayerDidVisitNamedHomeWithPrice:
   color: dark_aqua
   text: 'Teleported to the home "%homename%" of %playername%. Cost: %price%.'
 
@@ -258,14 +251,14 @@ NamedHomeSet:
 NamedHomeSetWithPrice:
   color: dark_aqua
   text: 'Home "%homename%" set. Cost: %price%.'
-NamedHomeDeleted:
+PlayerDidDeleteNamedHome:
   color: dark_aqua
   text: 'Deleted home "%homename%"'
 
-PlayerInvited:
+PlayerDidInvitePlayer:
   color: dark_aqua
   text: '%playername% invited.'
-PublicInvited:
+PlayerDidInvitePublic:
   color: dark_aqua
   text: 'Public invite created.'
 
@@ -646,11 +639,11 @@ ListMyInvitesTitle:
 ListMyInvitesDefaultHeader:
 - color: dark_aqua
   text: ' [Default]: '
-- [ '%homelist%' ]
+- [ '%playerlist%' ]
 ListMyInvitesNamedHeader:
 - color: dark_aqua
   text: ' %homename%: '
-- [ '%homelist%' ]
+- [ '%playerlist%' ]
 ListMyInvitesPlayerEntry:
 - color: aqua
   text: '%playername%'
@@ -768,3 +761,13 @@ BuyHomeMenu:
 PlayerDidBuyHome:
 - color: dark_aqua
   text: 'You were debited %price% and now have %maxhomes% home slots.'
+
+HomeInBlacklistedWorld:
+- color: red
+  text: Homes are not allowed in this world.
+HomeInsideClaim:
+- color: red
+  text: This location is claimed by another player.
+HomeUnavailable:
+- color: red
+  text: This home is unavailable.

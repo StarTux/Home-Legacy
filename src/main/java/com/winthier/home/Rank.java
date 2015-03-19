@@ -3,6 +3,7 @@ package com.winthier.home;
 import com.winthier.home.util.Conf;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,8 +24,7 @@ public class Rank {
     private static List<Rank> store;
     private final String name;
     private final int maxHomes;
-    private final double buyHomeCostBase;
-    private final double buyHomeCostGrowth;
+    private final List<Double> buyHomeCost;
     private final double defaultSetHomeCost;
     private final double defaultGoHomeCost;
     private final double defaultVisitHomeCost;
@@ -37,15 +37,20 @@ public class Rank {
     private Rank() {
         name = "default";
         maxHomes = 0;
-        buyHomeCostBase = buyHomeCostGrowth = -1.0;
+        buyHomeCost = Arrays.<Double>asList(-1.0);
         defaultSetHomeCost = defaultGoHomeCost = defaultVisitHomeCost = defaultVisitHomeReward = namedSetHomeCost = namedGoHomeCost = namedVisitHomeCost = namedVisitHomeReward = 0.0;
     }
     
     private Rank(String name, Map<?, ?> map, Rank def) {
         this.name = name;
         maxHomes = Conf.getInt(map, "MaxHomes", def.maxHomes);
-        buyHomeCostBase = Conf.getDouble(map, "Economy.BuyHomeCostBase", def.buyHomeCostBase);
-        buyHomeCostGrowth = Conf.getDouble(map, "Economy.BuyHomeCostGrowth", def.buyHomeCostGrowth);
+        List<?> list = Conf.getList(map, "Economy.BuyHomeCost");
+        if (list == null) {
+            buyHomeCost = def.buyHomeCost;
+        } else {
+            buyHomeCost = new ArrayList<>(list.size());
+            for (Object o : list) buyHomeCost.add(Conf.toDouble(o, -1));
+        }
         defaultSetHomeCost = Conf.getDouble(map, "Economy.Default.SetHomeCost", def.defaultSetHomeCost);
         defaultGoHomeCost = Conf.getDouble(map, "Economy.Default.GoHomeCost", def.defaultGoHomeCost);
         defaultVisitHomeCost = Conf.getDouble(map, "Economy.Default.VisitHomeCost", def.defaultVisitHomeCost);
@@ -94,5 +99,9 @@ public class Rank {
     public static List<Rank> allRanks() {
         if (store == null) loadStore();
         return new ArrayList<Rank>(store);
+    }
+
+    public double getBuyHomeCost(int extraHomes) {
+        return buyHomeCost.get(Math.min(extraHomes, buyHomeCost.size() - 1));
     }
 }

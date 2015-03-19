@@ -1,8 +1,7 @@
 default:
   MaxHomes: 1
   Economy:
-    BuyHomeCostBase: -1
-    BuyHomeCostGrowth: -1
+    BuyHomeCost: [ -1 ]
     Default:
       SetHomeCost: 0
       GoHomeCost: 0

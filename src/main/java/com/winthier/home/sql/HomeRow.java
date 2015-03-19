@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -90,7 +91,7 @@ public class HomeRow {
     }
 
     public void setLocation(String worldName, double x, double y, double z, float yaw, float pitch) {
-        WorldRow world = WorldRow.forName(worldName);
+        WorldRow world = WorldRow.findOrCreate(worldName);
         setWorld(world);
         setX(x);
         setY(y);
@@ -99,68 +100,40 @@ public class HomeRow {
         setPitch(pitch);
     }
 
-    public InviteRow getInviteFor(PlayerRow playerRow) {
-        final val list = Homes.getInstance().getDatabase().find(InviteRow.class).where().eq("home", this).eq("invitee", playerRow).findList();
-        return Util.unique(list);
-    }
-
-    public InviteRow getInviteFor(UUID playerUuid) {
-        if (playerUuid == null) {
-            final val list = Homes.getInstance().getDatabase().find(InviteRow.class).where().isNull("invitee").findList();
-            return Util.unique(list);
-        }
-        PlayerRow player = PlayerRow.find(playerUuid);
-        if (player == null) return null;
-        return getInviteFor(player);
-    }
-
-    public boolean isInvited(PlayerRow playerRow) {
-        ExpressionFactory expr = Homes.getInstance().getDatabase().getExpressionFactory();
-        return 0 < Homes.getInstance().getDatabase().find(InviteRow.class).where().eq("home", this).or(expr.isNull("invitee"), expr.eq("invitee", playerRow)).findRowCount();
-    }
-
-    public boolean isInvited(UUID playerUuid) {
-        if (playerUuid == null) return 0 < Homes.getInstance().getDatabase().find(InviteRow.class).where().eq("home", this).isNull("invitee").findRowCount();
-        PlayerRow player = PlayerRow.find(playerUuid);
-        if (player == null) return false;
-        return isInvited(player);
-    }
-
     public static HomeRow forId(int id) {
-        return Homes.getInstance().getDatabase().find(HomeRow.class).where().idEq(id).findUnique();
+        return DB.get().find(HomeRow.class).where().idEq(id).findUnique();
     }
 
-    public static List<HomeRow> forId(List<Integer> ids) {
-        return Homes.getInstance().getDatabase().find(HomeRow.class).where().idIn(ids).findList();
+    static HomeRow find(PlayerRow owner, String name) {
+        return DB.unique(DB.get().find(HomeRow.class).where().eq("owner", owner).eq("name", name).findList());
     }
 
-    public static HomeRow find(PlayerRow owner, String name) {
-        final val list = Homes.getInstance().getDatabase().find(HomeRow.class).where().eq("owner", owner).eq("name", name).findList();
-        return Util.unique(list);
+    static List<HomeRow> findAll(PlayerRow owner) {
+        return DB.get().find(HomeRow.class).where().eq("owner", owner).findList();
     }
 
-    public static HomeRow find(UUID ownerUuid, String name) {
-        if (name != null && name.length() == 0) throw new IllegalArgumentException("Name must not be empty");
-        PlayerRow owner = PlayerRow.find(ownerUuid);
-        return find(owner, name);
+    public static HomeRow find(UUID owner, String name) {
+        PlayerRow player = PlayerRow.find(owner);
+        if (player == null) return null;
+        return find(player, name);
     }
 
-    public static List<HomeRow> find(PlayerRow owner) {
-        List<HomeRow> result = owner.getHomes();
-        if (result == null) return Collections.<HomeRow>emptyList();
-        return result;
+    public static List<HomeRow> findAll(UUID owner) {
+        PlayerRow player = PlayerRow.find(owner);
+        if (player == null) return Collections.<HomeRow>emptyList();
+        return findAll(player);
     }
 
-    public static List<HomeRow> find(UUID ownerUuid) {
-        PlayerRow owner = PlayerRow.find(ownerUuid);
-        if (owner == null) return Collections.<HomeRow>emptyList();
-        return find(owner);
+    public static int count(UUID owner) {
+        PlayerRow player = PlayerRow.find(owner);
+        if (player == null) return 0;
+        return DB.get().find(HomeRow.class).where().eq("owner", player).findRowCount();
     }
 
     /**
      * You have to set location on the result of this.
      */
-    public static HomeRow create(UUID ownerUuid, String name) {
+    public static HomeRow create(@NonNull UUID ownerUuid, String name) {
         PlayerRow owner = PlayerRow.findOrCreate(ownerUuid);
         HomeRow result = new HomeRow();
         result.setOwner(owner);
@@ -169,11 +142,11 @@ public class HomeRow {
         return result;
     }
 
-    public static HomeRow create(UUID ownerUuid, String name, String worldName, double x, double y, double z, float yaw, float pitch) {
+    public static HomeRow create(@NonNull UUID ownerUuid, String name, @NonNull String worldName, double x, double y, double z, float yaw, float pitch) {
         HomeRow result = new HomeRow();
         result.setOwner(PlayerRow.findOrCreate(ownerUuid));
         result.setName(name);
-        result.setWorld(WorldRow.forName(worldName));
+        result.setWorld(WorldRow.findOrCreate(worldName));
         result.setX(x);
         result.setY(y);
         result.setZ(z);
@@ -181,5 +154,13 @@ public class HomeRow {
         result.setPitch(pitch);
         result.setDateCreated(new Date());
         return result;
+    }
+
+    public void save() {
+        DB.get().save(this);
+    }
+
+    public void delete() {
+        DB.get().delete(this);
     }
 }

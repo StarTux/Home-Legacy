@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.Getter;
 import org.json.simple.JSONValue;
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,9 +27,6 @@ public class Message {
         NAMED_HOME_NOT_FOUND,
         CANNOT_DELETE_DEFAULT_HOME,
 
-        PLAYER_ALREADY_INVITED,
-        PUBLIC_ALREADY_INVITED,
-
         PLAYER_NOT_INVITED,
         PUBLIC_NOT_INVITED,
         NOBODY_IS_INVITED,
@@ -45,15 +43,15 @@ public class Message {
         NOT_ENOUGH_MONEY,
         TOO_MANY_HOMES,
 
-        TELEPORTED_DEFAULT_HOME,
-        TELEPORTED_DEFAULT_HOME_WITH_PRICE,
-        TELEPORTED_NAMED_HOME,
-        TELEPORTED_NAMED_HOME_WITH_PRICE,
+        PLAYER_DID_TELEPORT_DEFAULT_HOME,
+        PLAYER_DID_TELEPORT_DEFAULT_HOME_WITH_PRICE,
+        PLAYER_DID_TELEPORT_NAMED_HOME,
+        PLAYER_DID_TELEPORT_NAMED_HOME_WITH_PRICE,
 
-        VISITED_DEFAULT_HOME,
-        VISITED_DEFAULT_HOME_WITH_PRICE,
-        VISITED_NAMED_HOME,
-        VISITED_NAMED_HOME_WITH_PRICE,
+        PLAYER_DID_VISIT_DEFAULT_HOME,
+        PLAYER_DID_VISIT_DEFAULT_HOME_WITH_PRICE,
+        PLAYER_DID_VISIT_NAMED_HOME,
+        PLAYER_DID_VISIT_NAMED_HOME_WITH_PRICE,
 
         DEFAULT_HOME_REWARDED,
         NAMED_HOME_REWARDED,
@@ -63,10 +61,10 @@ public class Message {
 
         NAMED_HOME_SET,
         NAMED_HOME_SET_WITH_PRICE,
-        NAMED_HOME_DELETED,
+        PLAYER_DID_DELETE_NAMED_HOME,
 
-        PLAYER_INVITED,
-        PUBLIC_INVITED,
+        PLAYER_DID_INVITE_PLAYER,
+        PLAYER_DID_INVITE_PUBLIC,
 
         PLAYER_DID_RECEIVE_DEFAULT_INVITE,
         PLAYER_DID_RECEIVE_NAMED_INVITE,
@@ -112,6 +110,10 @@ public class Message {
 
         BUY_HOME_MENU,
         PLAYER_DID_BUY_HOME,
+
+        HOME_IN_BLACKLISTED_WORLD,
+        HOME_INSIDE_CLAIM,
+        HOME_UNAVAILABLE,
         ;
         public final String key;
         Key() {
@@ -125,6 +127,7 @@ public class Message {
     private static Map<String, Object> store;
     private Object root;
     private final Map<String, Object> replacements = new HashMap<>();
+    @Getter
     private final UUID recipient;
 
     private Message(Object root, UUID recipient) {
@@ -209,6 +212,10 @@ public class Message {
         Object raw = replaceAll();
         String json = JSONValue.toJSONString(raw);
         return Homes.getInstance().sendJSONMessage(recipient, json);
+    }
+
+    public void raise() {
+        throw new HomeCommandException(this);
     }
 
     public String parse() {

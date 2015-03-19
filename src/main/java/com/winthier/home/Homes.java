@@ -1,8 +1,9 @@
 package com.winthier.home;
 
 import com.avaje.ebean.EbeanServer;
-import com.winthier.home.sql.HomeRow;
+import com.winthier.home.sql.*;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
@@ -33,11 +34,11 @@ public abstract class Homes {
     }
 
     public void enable() {
-        Message.clearStore();
+        reload();
     }
 
     public void disable() {
-        Message.clearStore();
+        reload();
     }
 
     // Methods to override
@@ -56,6 +57,9 @@ public abstract class Homes {
     public abstract boolean playerHasPermission(UUID sender, Permission perm);
     public abstract String formatMoney(double amount);
     public abstract boolean msg(UUID sender, String msg, Object... args);
+    public abstract String getServerName();
+    public abstract boolean doCheckClaims();
+    public void onReload() {}
 
     // API functions
 
@@ -65,12 +69,28 @@ public abstract class Homes {
         return homeForRow(row);
     }
 
-    public int countHomes(UUID player) {
-        return HomeRow.find(player).size();
+    public List<Home> findHomes(UUID player) {
+        List<HomeRow> rows = HomeRow.findAll(player);
+        List<Home> result = new ArrayList<>(rows.size());
+        for (HomeRow row : rows) result.add(homeForRow(row));
+        return result;
     }
 
-    public void reload() {
+    public int countHomes(UUID player) {
+        return HomeRow.count(player);
+    }
+
+    public int getTotalMaxHomes(UUID player) {
+        return PlayerRow.findOrCreate(player).getTotalMaxHomes();
+    }
+
+    final void reload() {
         Message.clearStore();
         Rank.clearStore();
+        ServerRow.clearCache();
+        WorldRow.clearCache();
+        PlayerRow.clearCache();
+        WorldBlacklistRow.clearCache();
+        onReload();
     }
 }

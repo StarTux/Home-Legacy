@@ -5,6 +5,7 @@ import com.avaje.ebean.validation.NotEmpty;
 import com.avaje.ebean.validation.NotNull;
 import com.winthier.home.Homes;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -50,6 +51,19 @@ public class IgnoreInviteRow {
     @Version
     private Integer version;
 
+
+    public static IgnoreInviteRow forId(int id) {
+        return DB.get().find(IgnoreInviteRow.class).where().idEq(id).findUnique();
+    }
+
+    static IgnoreInviteRow find(PlayerRow player, InviteRow invite) {
+        return DB.unique(DB.get().find(IgnoreInviteRow.class).where().eq("player", player).eq("invite", invite).findList());
+    }
+
+    static List<IgnoreInviteRow> findAll(InviteRow invite) {
+        return DB.get().find(IgnoreInviteRow.class).where().eq("invite", invite).findList();
+    }
+    
     public static IgnoreInviteRow create(PlayerRow player, InviteRow invite) {
         IgnoreInviteRow result = new IgnoreInviteRow();
         result.setPlayer(player);
@@ -58,7 +72,7 @@ public class IgnoreInviteRow {
         return result;
     }
 
-    public static IgnoreInviteRow forId(int id) {
-        return Homes.getInstance().getDatabase().find(IgnoreInviteRow.class).where().idEq(id).findUnique();
+    void save() {
+        DB.get().save(this);
     }
 }

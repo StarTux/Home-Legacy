@@ -5,6 +5,7 @@ version: 0.1
 main: com.winthier.home.bukkit.BukkitHomePlugin
 database: true
 depend: [ Vault, PlayerCache ]
+softdepend: [ Claims ]
 commands:
 # User Commands
   homes:
@@ -119,21 +120,14 @@ permissions:
       home.listinvites: true
       home.listmyinvites: true
       home.deleteinvite: true
+  home.override:
+    description: View and visit homes of other players
+    default: op
+  home.override.edit:
+    description: Edit homes of other players
+    default: op
   home.admin:
-    description: Administrative privileges
-    default: op
-    children:
-      home.user: true
-      home.home.other: true
-      home.sethome.other: true
-      home.listhomes.other: true
-      home.deletehome.other: true
-      home.invitehome.other: true
-  home.admin.list:
-    description: use /homeadmin list
-    default: op
-  home.admin.goto:
-    description: use /homeadmin goto
+    description: Use /homeadmin
     default: op
   home.admin.grant:
     description: use /homeadmin grant
@@ -144,15 +138,19 @@ permissions:
   home.admin.consistency:
     description: use /homeadmin consistency
     default: op
-#  home.admin.import:
-#    description: use /homeadmin import
-#    default: op
+  home.admin.worldblacklist:
+    description: use /homeadmin worldblacklsit
+    default: op
+  home.admin.import:
+    description: use /homeadmin import
+    default: op
   home.admin.*:
     description: Add admin privileges
     default: op
     children:
-      home.admin.list: true
-      home.admin.goto: true
+      home.user: true
+      home.admin.grant: true
       home.admin.reload: true
+      home.admin.worldblacklist: true
       home.admin.consistency: true
       home.admin.import: true
