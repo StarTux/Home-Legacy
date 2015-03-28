@@ -52,7 +52,8 @@ public abstract class Homes {
     public abstract boolean hasMoney(UUID player, double amount);
     public abstract boolean giveMoney(UUID player, double amount);
     public abstract boolean takeMoney(UUID player, double amount);
-    public abstract boolean sendJSONMessage(UUID player, String json);
+    public abstract boolean sendJsonMessage(UUID player, String json);
+    public abstract boolean subtitleJsonMessage(UUID player, String json);
     public abstract boolean playerHasRank(UUID player, String rank);
     public abstract boolean playerHasPermission(UUID sender, Permission perm);
     public abstract String formatMoney(double amount);
