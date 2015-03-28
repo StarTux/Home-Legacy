@@ -49,6 +49,9 @@ public class InviteRow {
     @ManyToOne
     private PlayerRow invitee;
 
+    @ManyToOne
+    private ServerRow server;
+
     @NotNull
     private Date dateCreated;
 
@@ -73,27 +76,15 @@ public class InviteRow {
     }
 
     static List<InviteRow> findOrPublic(@NonNull HomeRow home, @NonNull PlayerRow invitee) {
-        return DB.get().find(InviteRow.class).where().eq("home", home).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
+        return DB.get().find(InviteRow.class).where().eq("server", ServerRow.getThisServer()).eq("home", home).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
     }
     
     public static List<InviteRow> findAll(@NonNull HomeRow home) {
         return DB.get().find(InviteRow.class).where().eq("home", home).findList();
     }
 
-    // List<InviteRow> findWithPublic(@NonNull HomeRow home, @NonNull PlayerRow invitee) {
-    //     return DB.get().find(InviteRow.class).where().eq("home", home).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
-    // }
-    
-    // static List<InviteRow> findAll(@NonNull PlayerRow invitee) {
-    //     return DB.get().find(InviteRow.class).where().eq("invitee", invitee).findList();
-    // }
-
-    // static List<InviteRow> findAllWithPublic(@NonNull PlayerRow invitee) {
-    //     return DB.get().find(InviteRow.class).where().or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
-    // }
-
     public static InviteRow findPublic(@NonNull HomeRow home) {
-        return DB.unique(DB.get().find(InviteRow.class).where().eq("home", home).isNull("invitee").findList());
+        return DB.unique(DB.get().find(InviteRow.class).where().eq("server", ServerRow.getThisServer()).eq("home", home).isNull("invitee").findList());
     }
 
     public static InviteRow find(UUID ownerUuid, String homeName, UUID inviteeUuid) {
@@ -114,7 +105,7 @@ public class InviteRow {
         List<HomeRow> homes = HomeRow.findAll(ownerUuid);
         if (homes.isEmpty()) return Collections.<InviteRow>emptyList();
         PlayerRow invitee = PlayerRow.findOrCreate(inviteeUuid);
-        return DB.get().find(InviteRow.class).where().in("home", homes).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
+        return DB.get().find(InviteRow.class).where().eq("server", ServerRow.getThisServer()).in("home", homes).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
     }
 
     public static InviteRow findPublic(UUID ownerUuid, String homeName) {
@@ -125,20 +116,21 @@ public class InviteRow {
 
     public static List<InviteRow> findAllForInviteeOrPublic(@NonNull UUID inviteeUuid) {
         PlayerRow invitee = PlayerRow.findOrCreate(inviteeUuid);
-        return DB.get().find(InviteRow.class).where().or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
+        return DB.get().find(InviteRow.class).where().eq("server", ServerRow.getThisServer()).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findList();
     }
 
     public static boolean isInvited(UUID ownerUuid, String homeName, UUID inviteeUuid) {
         HomeRow home = HomeRow.find(ownerUuid, homeName);
         if (home == null) return false;
         PlayerRow invitee = PlayerRow.findOrCreate(inviteeUuid);
-        return DB.get().find(InviteRow.class).where().eq("home", home).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findRowCount() > 0;
+        return DB.get().find(InviteRow.class).where().eq("server", ServerRow.getThisServer()).eq("home", home).or(DB.fact().isNull("invitee"), DB.fact().eq("invitee", invitee)).findRowCount() > 0;
     }
 
     static InviteRow create(HomeRow home, PlayerRow invitee) {
         InviteRow result = new InviteRow();
         result.setHome(home);
         result.setInvitee(invitee);
+        result.setServer(ServerRow.getThisServer());
         result.setDateCreated(new Date());
         result.save();
         return result;
