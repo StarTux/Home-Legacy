@@ -208,7 +208,7 @@ TooManyHomes:
 
 PlayerDidTeleportDefaultHome:
   color: dark_aqua
-  text: 'Teleported to your default home.'
+  text: 'Welcome home :)'
 PlayerDidTeleportDefaultHomeWithPrice:
   color: dark_aqua
   text: 'Teleported to your default home. Cost: %price%.'
@@ -239,16 +239,16 @@ NamedHomeRewarded:
   color: dark_aqua
   text: '%playername% visited your home "%homename%" and pays you %reward%.'
 
-DefaultHomeSet:
+PlayerDidSetDefaultHome:
   color: dark_aqua
   text: 'Default home set.'
-DefaultHomeSetWithPrice:
+PlayerDidSetDefaultHomeWithPrice:
   color: dark_aqua
   text: 'Default home set. Cost: %price%.'
-NamedHomeSet:
+PlayerDidSetNamedHome:
   color: dark_aqua
   text: 'Home "%homename%" set.'
-NamedHomeSetWithPrice:
+PlayerDidSetNamedHomeWithPrice:
   color: dark_aqua
   text: 'Home "%homename%" set. Cost: %price%.'
 PlayerDidDeleteNamedHome:
