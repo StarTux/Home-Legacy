@@ -35,7 +35,7 @@ public class HomeActions {
         // Send messages
         {
             Message.Key key = homeName == null ? (price > 0.0 ? Message.Key.PLAYER_DID_TELEPORT_DEFAULT_HOME_WITH_PRICE : Message.Key.PLAYER_DID_TELEPORT_DEFAULT_HOME) : (price > 0.0 ? Message.Key.PLAYER_DID_TELEPORT_NAMED_HOME_WITH_PRICE : Message.Key.PLAYER_DID_TELEPORT_NAMED_HOME);
-            key.make(playerUuid).replace("%homename%", homeName).replace("%price%", homes.formatMoney(price)).send();
+            key.make(playerUuid).replace("%homename%", homeName).replace("%price%", homes.formatMoney(price)).sendAndSubtitle();
         }
     }
 
@@ -93,8 +93,8 @@ public class HomeActions {
         // Save
         homeRow.save();
         // Send message
-        Message.Key key = homeName == null ? (price > 0.0 ? Message.Key.DEFAULT_HOME_SET_WITH_PRICE : Message.Key.DEFAULT_HOME_SET) : (price > 0.0 ? Message.Key.NAMED_HOME_SET_WITH_PRICE : Message.Key.NAMED_HOME_SET);
-        key.make(playerUuid).replace("%price%", homes.formatMoney(price)).replace("%homename%", homeName).send();
+        Message.Key key = homeName == null ? (price > 0.0 ? Message.Key.PLAYER_DID_SET_DEFAULT_HOME_WITH_PRICE : Message.Key.PLAYER_DID_SET_DEFAULT_HOME) : (price > 0.0 ? Message.Key.PLAYER_DID_SET_NAMED_HOME_WITH_PRICE : Message.Key.PLAYER_DID_SET_NAMED_HOME);
+        key.make(playerUuid).replace("%price%", homes.formatMoney(price)).replace("%homename%", homeName).sendAndSubtitle();
     }
 
     public void setHomeOverride(@NonNull UUID sender, @NonNull UUID player, String homeName) {
@@ -176,7 +176,7 @@ public class HomeActions {
         // Send message to owner
         Message.Key key = inviteeUuid == null ? Message.Key.PLAYER_DID_INVITE_PUBLIC : Message.Key.PLAYER_DID_INVITE_PLAYER;
         String inviteeName = inviteeUuid == null ? null : Players.getName(inviteeUuid);
-        key.make(playerUuid).replace("%playername%", inviteeName).send();
+        key.make(playerUuid).replace("%playername%", inviteeName).sendAndSubtitle();
         // Send message to invitee
         if (inviteeUuid != null) {
             double price = homeName == null ? Rank.forPlayer(inviteeUuid).getDefaultVisitHomeCost() : Rank.forPlayer(inviteeUuid).getNamedVisitHomeCost();
