@@ -1,6 +1,7 @@
 package com.winthier.home;
 
 import com.winthier.home.util.Conf;
+import com.winthier.home.util.Players;
 import com.winthier.home.util.Strings;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,11 +57,10 @@ public class Message {
         DEFAULT_HOME_REWARDED,
         NAMED_HOME_REWARDED,
 
-        DEFAULT_HOME_SET,
-        DEFAULT_HOME_SET_WITH_PRICE,
-
-        NAMED_HOME_SET,
-        NAMED_HOME_SET_WITH_PRICE,
+        PLAYER_DID_SET_DEFAULT_HOME,
+        PLAYER_DID_SET_DEFAULT_HOME_WITH_PRICE,
+        PLAYER_DID_SET_NAMED_HOME,
+        PLAYER_DID_SET_NAMED_HOME_WITH_PRICE,
         PLAYER_DID_DELETE_NAMED_HOME,
 
         PLAYER_DID_INVITE_PLAYER,
@@ -194,24 +194,36 @@ public class Message {
     // public Message fill(PlayerRow playerRow, List<HomeRow> homes, Rank rank) {
     //     final UUID uuid = row.getUuid();
     //     replace("%playeruuid%", uuid);
-    //     replace("%player%", Homes.getInstance().getPlayerName(uuid));
+    //     replace("%player%", Players.getName(uuid));
     //     replace("%homecount%", homes.size());
     //     replace("%maxhomes%", rank.getMaxHomes() + playerRow.getExtraHomes());
     //     return this;
     // }
 
     private Object replaceAll() {
+        String playerName = Players.getName(recipient);
+        if (playerName != null) replace("%sendername%", playerName);
+        replace("%senderuuid%", recipient);
         return Conf.replace(root, replacements);
     }
 
     public boolean send() {
         if (root == null) return false;
-        String playerName = Homes.getInstance().getPlayerName(recipient);
-        if (playerName != null) replace("%sendername%", playerName);
-        replace("%senderuuid%", recipient);
-        Object raw = replaceAll();
-        String json = JSONValue.toJSONString(raw);
-        return Homes.getInstance().sendJSONMessage(recipient, json);
+        String json = JSONValue.toJSONString(replaceAll());
+        return Homes.getInstance().sendJsonMessage(recipient, json);
+    }
+
+    public boolean subtitle() {
+        if (root == null) return false;
+        String json = JSONValue.toJSONString(replaceAll());
+        return Homes.getInstance().subtitleJsonMessage(recipient, json);
+    }
+
+    public boolean sendAndSubtitle() {
+        if (root == null) return false;
+        String json = JSONValue.toJSONString(replaceAll());
+        if (!Homes.getInstance().sendJsonMessage(recipient, json)) return false;
+        return Homes.getInstance().subtitleJsonMessage(recipient, json);
     }
 
     public void raise() {
