@@ -103,16 +103,28 @@ class BukkitHomes extends Homes {
     }
 
     @Override
-    public boolean sendJSONMessage(UUID uuid, String json) {
+    public boolean sendJsonMessage(UUID uuid, String json) {
         final Player player = Bukkit.getServer().getPlayer(uuid);
         if (player == null) return false;
         final CommandSender console = Bukkit.getServer().getConsoleSender();
-        final String command = "tellraw " + player.getName() + " " + json;
+        final String command = "minecraft:tellraw " + player.getName() + " " + json;
         // System.out.println("Command: " + command);
         Bukkit.getServer().dispatchCommand(console, command);
         return true;
     }
 
+    @Override
+    public boolean subtitleJsonMessage(UUID uuid, String json) {
+        final Player player = Bukkit.getServer().getPlayer(uuid);
+        if (player == null) return false;
+        final CommandSender console = Bukkit.getServer().getConsoleSender();
+        final String command = String.format("minecraft:title %s subtitle %s", player.getName(), json);
+        Bukkit.getServer().dispatchCommand(console, command);
+        final String command2 = String.format("minecraft:title %s title ''", player.getName());
+        Bukkit.getServer().dispatchCommand(console, command2);
+        return true;
+    }
+    
     @Override
     public boolean playerHasRank(UUID uuid, String rank) {
         final OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(uuid);
