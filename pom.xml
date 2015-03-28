@@ -5,7 +5,7 @@
   <artifactId>home</artifactId>
   <packaging>jar</packaging>
   <version>0.1</version>
-  <name>home</name>
+  <name>Home</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
