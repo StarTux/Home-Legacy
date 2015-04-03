@@ -290,7 +290,7 @@ public class HomeActions {
                 key = inviteeUuid == null ? Message.Key.LIST_MY_INVITES_PUBLIC_ENTRY : Message.Key.LIST_MY_INVITES_PLAYER_ENTRY;
                 contents.add(key.make(sender).replace("%homename%", homeName).replace("%playername%", inviteeName));
                 if (edit) {
-                    key = homeName == null ? Message.Key.LIST_MY_INVITES_DELETE_DEFAULT_PLAYER : Message.Key.LIST_MY_INVITES_DELETE_NAMED_PLAYER;
+                    key = inviteeUuid == null ? (homeName == null ? Message.Key.LIST_MY_INVITES_DELETE_DEFAULT_PUBLIC : Message.Key.LIST_MY_INVITES_DELETE_NAMED_PUBLIC) : (homeName == null ? Message.Key.LIST_MY_INVITES_DELETE_DEFAULT_PLAYER : Message.Key.LIST_MY_INVITES_DELETE_NAMED_PLAYER);
                     contents.add(key.make(sender).replace("%homename%", homeName).replace("%playername%", inviteeName));
                 }
             }

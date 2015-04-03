@@ -44,15 +44,15 @@ commands:
       /InviteHome <Player> - Invite someone to your default home
       /InviteHome <Player> <Name> - Invite someone to a named home
       /InviteHome * - Invite everyone to your default home
-      /InviteHome * - <Name> Invite everyone to your a named home
+      /InviteHome * <Name> - Invite everyone to your a named home
   uninvitehome:
     description: Retract an invitation to your home
     permission: home.uninvitehome
     usage: |-
-      /InviteHome <Player> - Invite someone to your default home
-      /InviteHome <Player> <Name> - Invite someone to a named home
-      /InviteHome * - Invite everyone to your default home
-      /InviteHome * - <Name> Invite everyone to your a named home
+      /UninviteHome <Player> - Uninvite someone from your default home
+      /UninviteHome <Player> <Name> - Uninvite someone from a named home
+      /UninviteHome * - Uninvite everyone from your default home
+      /UninviteHome * <Name> - Uninvite everyone from your a named home
   listinvites:
     description: List all homes you are invited to
     permission: home.listinvites
