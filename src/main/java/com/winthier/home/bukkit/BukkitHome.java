@@ -31,6 +31,7 @@ public class BukkitHome extends Home {
     public boolean teleport(UUID uuid) {
         Player player = Bukkit.getServer().getPlayer(uuid);
         if (player == null) return false;
+        player.eject();
         return player.teleport(location);
     }
 }
