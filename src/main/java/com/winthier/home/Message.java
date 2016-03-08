@@ -213,19 +213,6 @@ public class Message {
         return Homes.getInstance().sendJsonMessage(recipient, json);
     }
 
-    public boolean subtitle() {
-        if (root == null) return false;
-        String json = JSONValue.toJSONString(replaceAll());
-        return Homes.getInstance().subtitleJsonMessage(recipient, json);
-    }
-
-    public boolean sendAndSubtitle() {
-        if (root == null) return false;
-        String json = JSONValue.toJSONString(replaceAll());
-        if (!Homes.getInstance().sendJsonMessage(recipient, json)) return false;
-        return Homes.getInstance().subtitleJsonMessage(recipient, json);
-    }
-
     public void raise() {
         throw new HomeCommandException(this);
     }

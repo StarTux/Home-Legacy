@@ -114,14 +114,10 @@ class BukkitHomes extends Homes {
     }
 
     @Override
-    public boolean subtitleJsonMessage(UUID uuid, String json) {
+    public boolean sendSubtitle(UUID uuid, String msg) {
         final Player player = Bukkit.getServer().getPlayer(uuid);
         if (player == null) return false;
-        final CommandSender console = Bukkit.getServer().getConsoleSender();
-        final String command = String.format("minecraft:title %s subtitle %s", player.getName(), json);
-        Bukkit.getServer().dispatchCommand(console, command);
-        final String command2 = String.format("minecraft:title %s title ''", player.getName());
-        Bukkit.getServer().dispatchCommand(console, command2);
+        player.sendTitle("", ChatColor.translateAlternateColorCodes('&', msg));
         return true;
     }
     
